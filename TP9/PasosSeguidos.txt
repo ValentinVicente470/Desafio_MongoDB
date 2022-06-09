@@ -1,0 +1,74 @@
+//conectarse a mongo.
+    mongod --dbpath "C:\Users\Usuario\visual studio code\DBSmongo"
+    mongo
+
+
+//crear y usar base de datos ecommerce.
+    use ecommerce
+
+
+//crear colecciones.
+    db.createCollection('productos')
+    db.createCollection('mensajes')
+
+
+1)- agregar 10 documentos a cada coleccion.
+
+    db.productos.insertMany([{name: 'Teclado', description: 'esto es un teclado', code: 'af1502', price: 120, thumbnail: 'https://cdn1.iconfinder.com/data/icons/hardware-and-devices/64/Hardware_devices_keyboard-128.png'},{name: 'Mouse', description: 'esto es un mouse', code: 'az4567', price: 580, thumbnail: 'https://cdn4.iconfinder.com/data/icons/electronics-and-gadget-3/64/MOUSE-devices-electronics-gadget-tools-128.png'},{name: 'Monitor', description: 'esto es un monitor', code: 'aw4876', price: 900, thumbnail: 'https://cdn2.iconfinder.com/data/icons/flat-set-2/64/flat_set_2-09-128.png'},{name: 'Audiculares', description: 'esto es un audicular', code: 'al0812', price: 1280, thumbnail: 'https://cdn2.iconfinder.com/data/icons/don-t-stop-the-music/66/headphones-128.png'},{name: 'Celular', description: 'esto es un celular', code: 'ay5981', price: 1700, thumbnail: 'https://cdn3.iconfinder.com/data/icons/smartphone-app-flaticon/64/APP-smartphone-celular-mobile_app-technology-128.png'},{name: 'Smartwatch', description: 'esto es un smartwatch', code: 'aq2312', price: 2300, thumbnail: 'https://cdn1.iconfinder.com/data/icons/shopping-and-commerce-3-8/134/209-128.png'},{name: 'Usb', description: 'esto es un usb', code: 'ax6541', price: 2860, thumbnail: 'https://cdn4.iconfinder.com/data/icons/it-components-2/24/flash_drive_usb_pendrive-128.png'},{name: 'Ventilador', description: 'esto es un ventilador', code: 'as3030', price: 3350, thumbnail: 'https://cdn2.iconfinder.com/data/icons/home-appliances-18/64/_Fan-128.png'},{name: 'Television', description: 'esto es una television', code: 'aj6756', price: 4320, thumbnail: 'https://cdn1.iconfinder.com/data/icons/tourism-travel-1/256/TV-128.png'},{name: 'CPU', description: 'esto es un cpu', code: 'au2109', price: 4990, thumbnail: 'https://cdn2.iconfinder.com/data/icons/network-data-center-connection-devices/50/45-128.png'},])
+
+    db.mensajes.insertMany([{author: 'pepe', message: 'Hola soy pepe'},{author: 'juan', message: 'Hola soy juan'},{author: 'marcos', message: 'Hola soy marcos'},{author: 'lujan', message: 'Hola soy lujan'},{author: 'mariano', message: 'Hola soy mariano'},{author: 'matias', message: 'Hola soy matias'},{author: 'candela', message: 'Hola soy candela'},{author: 'valentin', message: 'Hola soy valentin'},{author: 'agustin', message: 'Hola soy agustin'},{author: 'pedro', message: 'Hola soy pedro'},])
+
+
+3)- listar los documentos en cada coleccion.
+
+    db.productos.find()
+
+    db.mensajes.find()
+
+
+4)- mostrar la cantidad de documentos de cada coleccion.
+
+    db.productos.estimatedDocumentCount()
+    
+    db.mensajes.estimatedDocumentCount()
+
+
+5)-
+    a)- agregar un producto mas en la coleccion productos.
+
+        db.productos.insertOne({name: 'botella', description: 'esto es una botella', code: 'am3303', price: 4999, thumbnail: 'https://cdn1.iconfinder.com/data/icons/drink-beverage/512/35-bottled-water-bottle-plastic-128.png'})
+
+    b)-
+        i)-listar productos con precio menor a 1000.
+
+            db.productos.find({price: {$lt: 1000}})
+
+        ii)- listar productos con precio entre 1000 a 3000.
+
+            db.productos.find({$and: [ {price: {$gt: 1000}}, {price: {$lt: 3000}} ] })
+
+        iii)- listar productos con precio mayor a 3000.
+
+            db.productos.find({price: {$gt: 3000}})
+
+        iv)-traer solo el nombre del tercer producto mas barato.
+
+            db.productos.find({},{name: 1, _id: 0}).sort({price: 1}).limit(1).skip(2)
+
+    c)- agregar campo stock a todos los productos con valor de 100.
+
+        db.productos.updateMany({}, {$set: {'stock': 100}}, {upsert: true})
+
+    d)- poner stock en cero de productos con precio mayor a 4000.
+
+        db.productos.updateMany({price: {$gt: 4000}}, {$set: {'stock': 0}})
+
+    e)- borrar productos con precio menor a 1000. 
+
+        db.productos.deleteMany({price: {$lt: 1000}})
+
+
+6)- crear usuario: 'pepe' clave: 'asd456' solo lector de ecommerce. (hacerlo en la base de datos admin).
+
+    db.createUser({user: "pepe", pwd: "asd456", roles: [{role: "read", db: "ecommerce"}]})
+
